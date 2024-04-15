@@ -1,0 +1,6 @@
+body:
+  - type: inputWithFileBtn
+    attributes:
+      name: binPath
+      label: "FileZilla executable path:"
+      defaultValue: ""

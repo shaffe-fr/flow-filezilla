@@ -1,0 +1,12 @@
+{
+  "ID": "dc27e477-0aff-45bf-801f-b09d3b843753",
+  "ActionKeyword": "fz",
+  "Name": "FileZilla",
+  "Description": "Launch FileZilla sessions",
+  "Author": "Karel Faille",
+  "Version": "1.0.0",
+  "Language": "typescript",
+  "Website": "https://github.com/shaffe-fr/flow-filezilla",
+  "ExecuteFileName": "build/index.js",
+  "IcoPath": "app.png"
+}
