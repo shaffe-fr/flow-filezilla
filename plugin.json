@@ -6,6 +6,7 @@
   "Author": "Karel Faille",
   "Version": "1.0.0",
   "Language": "typescript",
+  "ExecuteFileName": "./dist/main.ts",
   "Website": "https://github.com/shaffe-fr/flow-filezilla",
   "UrlDownload": "https://github.com/shaffe-fr/flow-filezilla/releases/download/v1.0.0/Flow.Launcher.Plugin.FileZilla.zip",
   "UrlSourceCode": "https://github.com/shaffe-fr/flow-filezilla/tree/main",
