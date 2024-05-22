@@ -4,6 +4,32 @@ import path from "node:path";
 import process from "node:process";
 import * as xml2js from "xml2js";
 import { execSync } from "node:child_process";
+export function findFileZillaExecutable() {
+    const envProgramFiles = process.env.ProgramFiles;
+    const envProgramFilesX86 = process.env["ProgramFiles(x86)"];
+    const possiblePaths = [];
+    if (envProgramFiles) {
+        possiblePaths.push(path.join(envProgramFiles, "FileZilla FTP Client"));
+    }
+    if (envProgramFilesX86) {
+        possiblePaths.push(path.join(envProgramFilesX86, "FileZilla FTP Client"));
+    }
+    for (const dir of possiblePaths) {
+        try {
+            const files = fs.readdirSync(dir);
+            const exeFile = files.find((file) => file.toLowerCase().startsWith("filezilla.exe"));
+            if (exeFile) {
+                const fullPath = path.join(dir, exeFile);
+                if (fs.existsSync(fullPath)) {
+                    return fullPath;
+                }
+            }
+        }
+        catch (err) {
+        }
+    }
+    return null;
+}
 export function open(executable) {
     execSync(`"${executable}"`);
 }
@@ -12,10 +38,7 @@ export function connect(executable, ftpName) {
 }
 export function query() {
     let siteManagerPath;
-    if (os.platform() == "darwin" || os.platform() == "linux") {
-        siteManagerPath = path.resolve(process.env.HOME, ".filezilla/sitemanager.xml");
-    }
-    else if (os.platform() == "win32") {
+    if (os.platform() == "win32") {
         siteManagerPath = path.resolve(process.env.APPDATA, "FileZilla/sitemanager.xml");
     }
     else {

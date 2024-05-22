@@ -10,6 +10,6 @@
     "strict": true,
     "skipLibCheck": true,
     "removeComments": true,
-    "outDir": "./build"
+    "outDir": "./dist"
   }
 }
