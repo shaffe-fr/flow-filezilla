@@ -5,11 +5,6 @@ const { requestParams, showResult, on, run, settings } = new Flow("app.png");
 let miniSearch = new MiniSearch({
     idField: "title",
     fields: ["title", "subtitle"],
-    searchOptions: {
-        boost: { title: 3 },
-        prefix: true,
-        fuzzy: 0.2,
-    },
 });
 on("query", () => {
     const fileZillaBinPath = (settings === null || settings === void 0 ? void 0 : settings.binPath) || findFileZillaExecutable();
@@ -31,7 +26,10 @@ on("query", () => {
         miniSearch.addAll(sites);
         if (searchQuery.length) {
             const results = miniSearch
-                .search(searchQuery)
+                .search(searchQuery, {
+                prefix: (term) => term.length >= 3,
+                fuzzy: (term) => term.length >= 7 ? 0.5 : term.length >= 4 ? 0.2 : false
+            })
                 .reduce((acc, result) => {
                 acc[result.id] = result.id;
                 return acc;

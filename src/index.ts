@@ -23,11 +23,6 @@ const { requestParams, showResult, on, run, settings } = new Flow<
 let miniSearch = new MiniSearch({
   idField: "title",
   fields: ["title", "subtitle"], // fields to index for full-text search
-  searchOptions: {
-    boost: { title: 3 },
-    prefix: true,
-    fuzzy: 0.2,
-  },
 });
 
 // Index all documents
@@ -60,7 +55,10 @@ on("query", () => {
 
     if (searchQuery.length) {
       const results: { [key: string]: string } = miniSearch
-        .search(searchQuery)
+        .search(searchQuery, {
+            prefix: (term) => term.length >= 3,
+            fuzzy: (term) => term.length >= 7 ? 0.5 : term.length >= 4 ? 0.2 : false
+        })
         .reduce((acc: { [key: string]: string }, result: SearchResult) => {
           acc[result.id] = result.id;
 
