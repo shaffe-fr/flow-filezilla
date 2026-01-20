@@ -115,11 +115,11 @@ function extractSites(node: any, parentFolder: string = "") {
 
   (node?.Server ?? []).forEach((site: any) => {
     sites.push({
-      id: (parentFolder + site.Name[0]) as string,
-      name: (parentFolder + site.Name[0]) as string,
-      user: site.User[0] as string,
-      host: `${site.Host[0]}:${site.Port[0]}` as string,
-      type: site.Type[0] as 0 | 1,
+      id: (parentFolder + site.Name?.[0]) as string,
+      name: (parentFolder + site.Name?.[0]) as string,
+      user: (site.User?.[0] ?? '') as string,
+      host: `${site.Host?.[0] ?? ''}:${site.Port?.[0] ?? ''}` as string,
+      type: (site.Type?.[0] ?? 0) as 0 | 1,
     });
   });
 
