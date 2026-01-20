@@ -7,7 +7,7 @@ let miniSearch = new MiniSearch({
     fields: ["title", "subtitle"],
 });
 on("query", () => {
-    const fileZillaBinPath = (settings === null || settings === void 0 ? void 0 : settings.binPath) || findFileZillaExecutable();
+    const fileZillaBinPath = findFileZillaExecutable(settings === null || settings === void 0 ? void 0 : settings.binPath);
     if (!fileZillaBinPath) {
         return showResult({
             title: "Error",
@@ -23,18 +23,18 @@ on("query", () => {
             params: [fileZillaBinPath, `${site.type}/${site.id}`],
             icoPath: "app.png",
         }));
+        miniSearch.removeAll();
         miniSearch.addAll(sites);
         if (searchQuery.length) {
-            const results = miniSearch
-                .search(searchQuery, {
-                prefix: (term) => term.length >= 3,
-                fuzzy: (term) => term.length >= 7 ? 0.5 : term.length >= 4 ? 0.2 : false
-            })
-                .reduce((acc, result) => {
-                acc[result.id] = result.id;
-                return acc;
-            }, {});
-            sites = sites.filter((item) => item.title in results);
+            const searchResults = miniSearch.search(searchQuery, {
+                prefix: true,
+                fuzzy: (term) => term.length >= 4 ? 0.25 : false,
+                boost: { title: 5 },
+                combineWith: 'AND'
+            });
+            sites = searchResults
+                .map((result) => sites.find(site => site.title === result.id))
+                .filter((site) => site !== undefined);
         }
         else {
             sites = [
