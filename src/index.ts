@@ -55,20 +55,16 @@ on("query", () => {
     miniSearch.addAll(sites);
 
     if (searchQuery.length) {
-      const results: { [key: string]: string } = miniSearch
-        .search(searchQuery, {
-            prefix: (term) => term.length >= 3,
-            fuzzy: (term) => term.length >= 7 ? 0.5 : term.length >= 4 ? 0.2 : false
-        })
-        .reduce((acc: { [key: string]: string }, result: SearchResult) => {
-          acc[result.id] = result.id;
+      const searchResults = miniSearch.search(searchQuery, {
+        prefix: true,
+        fuzzy: (term) => term.length >= 4 ? 0.25 : false,
+        boost: { title: 5 },
+        combineWith: 'AND'
+      });
 
-          return acc;
-        }, {});
-
-      sites = sites.filter(
-        (item: JSONRPCResponse<Methods>) => item.title in results
-      );
+      sites = searchResults
+        .map((result: SearchResult) => sites.find(site => site.title === result.id))
+        .filter((site): site is JSONRPCResponse<Methods> => site !== undefined);
     } else {
       sites = [
         {
