@@ -51,6 +51,7 @@ on("query", () => {
       })
     );
 
+    miniSearch.removeAll();
     miniSearch.addAll(sites);
 
     if (searchQuery.length) {
