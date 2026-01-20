@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import * as xml2js from "xml2js";
-import { execSync } from "node:child_process";
+import { spawn } from "node:child_process";
 
 export type FileZillaSite = {
   id: string;
@@ -59,11 +59,11 @@ export function findFileZillaExecutable(basePath?: string): string | null {
 }
 
 export function open(executable: string) {
-  execSync(`"${executable}"`);
+  spawn(executable, [], { detached: true, stdio: 'ignore' }).unref();
 }
 
 export function connect(executable: string, ftpName: string) {
-  execSync(`"${executable}" --site "${ftpName}"`);
+  spawn(executable, ['--site', ftpName], { detached: true, stdio: 'ignore' }).unref();
 }
 
 export function query(): FileZillaSite[] {
