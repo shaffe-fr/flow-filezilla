@@ -13,10 +13,21 @@ export type FileZillaSite = {
   type: 0 | 1;
 };
 
-export function findFileZillaExecutable(): string | null {
+export function findFileZillaExecutable(basePath?: string): string | null {
+  const possiblePaths: string[] = [];
+
+  // If a base path is provided, check it first
+  if (basePath) {
+    // If it's already pointing to the exe, return it
+    if (basePath.toLowerCase().endsWith(".exe") && fs.existsSync(basePath)) {
+      return basePath;
+    }
+    // Otherwise treat it as a directory
+    possiblePaths.push(basePath);
+  }
+
   const envProgramFiles = process.env.ProgramFiles;
   const envProgramFilesX86 = process.env["ProgramFiles(x86)"];
-  const possiblePaths: string[] = [];
 
   // Add system environment variables to possible paths
   if (envProgramFiles) {
@@ -31,7 +42,7 @@ export function findFileZillaExecutable(): string | null {
     try {
       const files = fs.readdirSync(dir);
       const exeFile = files.find((file) =>
-        file.toLowerCase().startsWith("filezilla.exe")
+        file.toLowerCase() === "filezilla.exe"
       );
       if (exeFile) {
         const fullPath = path.join(dir, exeFile);

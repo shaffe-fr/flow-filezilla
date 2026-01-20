@@ -28,7 +28,7 @@ let miniSearch = new MiniSearch({
 // Index all documents
 
 on("query", () => {
-  const fileZillaBinPath = settings?.binPath || findFileZillaExecutable();
+  const fileZillaBinPath = findFileZillaExecutable(settings?.binPath);
 
   if (!fileZillaBinPath) {
     return showResult({
