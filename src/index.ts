@@ -46,9 +46,9 @@ on("query", () => {
         title: site.name,
         subtitle: `Host: ${site.host} | User: ${site.user}`,
         method: "connect",
-        params: [fileZillaBinPath, `${site.type}/${site.id}`] as ConnectParams,
+        params: [fileZillaBinPath, `0/${site.id}`] as ConnectParams,
         icoPath: "app.png",
-      })
+      }),
     );
 
     miniSearch.removeAll();
@@ -57,13 +57,15 @@ on("query", () => {
     if (searchQuery.length) {
       const searchResults = miniSearch.search(searchQuery, {
         prefix: true,
-        fuzzy: (term) => term.length >= 4 ? 0.25 : false,
+        fuzzy: (term) => (term.length >= 4 ? 0.25 : false),
         boost: { title: 5 },
-        combineWith: 'AND'
+        combineWith: "AND",
       });
 
       sites = searchResults
-        .map((result: SearchResult) => sites.find(site => site.title === result.id))
+        .map((result: SearchResult) =>
+          sites.find((site) => site.title === result.id),
+        )
         .filter((site): site is JSONRPCResponse<Methods> => site !== undefined);
     } else {
       sites = [
