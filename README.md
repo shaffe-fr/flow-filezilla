@@ -44,6 +44,10 @@ The plugin will attempt to automatically guess the path to the FileZilla executa
 - In the settings for the plugin, enter the full path to the FileZilla executable.
 - Click 'Save' to apply the changes.
 
+### Portable FileZilla
+
+Portable installations are detected automatically: if a `Data/settings/sitemanager.xml` file exists next to the configured FileZilla executable, it is used. Otherwise the plugin falls back to the standard `%APPDATA%\FileZilla\sitemanager.xml` file.
+
 ## Feedback
 
 If you encounter any issues, have questions, or would like to request features, please feel free to open an issue on the [GitHub repository](https://github.com/shaffe-fr/flow-filezilla/issues). Your feedback is greatly appreciated!
