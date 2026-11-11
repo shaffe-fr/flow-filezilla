@@ -42,14 +42,20 @@ export function open(executable) {
 export function connect(executable, ftpName) {
     spawn(executable, ['--site', ftpName], { detached: true, stdio: 'ignore' }).unref();
 }
-export function query() {
-    let siteManagerPath;
-    if (os.platform() == "win32") {
-        siteManagerPath = path.resolve(process.env.APPDATA, "FileZilla/sitemanager.xml");
+export function findSiteManagerPath(executable) {
+    if (executable) {
+        const portablePath = path.join(path.dirname(executable), "Data", "settings", "sitemanager.xml");
+        if (fs.existsSync(portablePath)) {
+            return portablePath;
+        }
     }
-    else {
-        throw new Error("Unsupported Platform");
+    if (os.platform() == "win32" && process.env.APPDATA) {
+        return path.resolve(process.env.APPDATA, "FileZilla/sitemanager.xml");
     }
+    throw new Error("Unsupported Platform");
+}
+export function query(executable) {
+    const siteManagerPath = findSiteManagerPath(executable);
     let sites = [];
     try {
         var data = fs.readFileSync(siteManagerPath);

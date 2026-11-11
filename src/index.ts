@@ -41,7 +41,7 @@ on("query", () => {
   let searchQuery = requestParams.join(" ");
 
   try {
-    let sites: JSONRPCResponse<Methods>[] = query().map(
+    let sites: JSONRPCResponse<Methods>[] = query(fileZillaBinPath).map(
       (site: FileZillaSite) => ({
         title: site.name,
         subtitle: `Host: ${site.host} | User: ${site.user}`,

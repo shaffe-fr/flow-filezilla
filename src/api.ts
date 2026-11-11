@@ -66,17 +66,31 @@ export function connect(executable: string, ftpName: string) {
   spawn(executable, ['--site', ftpName], { detached: true, stdio: 'ignore' }).unref();
 }
 
-export function query(): FileZillaSite[] {
-  // Path to Sitemanager XML file
-  let siteManagerPath: string;
-  if (os.platform() == "win32") {
-    siteManagerPath = path.resolve(
-      process.env.APPDATA as string,
-      "FileZilla/sitemanager.xml"
+export function findSiteManagerPath(executable?: string): string {
+  // Portable installations store their configuration next to the executable
+  if (executable) {
+    const portablePath = path.join(
+      path.dirname(executable),
+      "Data",
+      "settings",
+      "sitemanager.xml"
     );
-  } else {
-    throw new Error("Unsupported Platform");
+    if (fs.existsSync(portablePath)) {
+      return portablePath;
+    }
   }
+
+  // Standard installation
+  if (os.platform() == "win32" && process.env.APPDATA) {
+    return path.resolve(process.env.APPDATA, "FileZilla/sitemanager.xml");
+  }
+
+  throw new Error("Unsupported Platform");
+}
+
+export function query(executable?: string): FileZillaSite[] {
+  // Path to Sitemanager XML file
+  const siteManagerPath = findSiteManagerPath(executable);
 
   let sites: FileZillaSite[] = [];
 
