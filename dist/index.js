@@ -16,7 +16,7 @@ on("query", () => {
     }
     let searchQuery = requestParams.join(" ");
     try {
-        let sites = query().map((site) => ({
+        let sites = query(fileZillaBinPath).map((site) => ({
             title: site.name,
             subtitle: `Host: ${site.host} | User: ${site.user}`,
             method: "connect",
